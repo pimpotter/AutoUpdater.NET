@@ -256,6 +256,14 @@ public static class AutoUpdater
     public static event CheckForUpdateEventHandler CheckForUpdateEvent;
 
     /// <summary>
+    ///     An event that clients can use to handle custom logic before update is handled.
+    /// </summary>
+    /// <remarks>
+    ///     To cancel update set <see cref="UpdateInfoEventArgs.IsUpdateAvailable"/>=false.
+    /// </remarks>
+    public static event CheckForUpdateEventHandler BeforeUpdateEvent;
+
+    /// <summary>
     ///     An event that clients can use to be notified whenever the AppCast file needs parsing.
     /// </summary>
     public static event ParseUpdateInfoHandler ParseUpdateInfoEvent;
@@ -505,6 +513,11 @@ public static class AutoUpdater
             }
             else
             {
+                if(BeforeUpdateEvent != null)
+                {
+                    BeforeUpdateEvent(args);
+                }
+
                 if (args.IsUpdateAvailable)
                 {
                     if (Mandatory && UpdateMode == Mode.ForcedDownload)
